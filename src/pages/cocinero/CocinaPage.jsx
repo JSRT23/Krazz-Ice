@@ -14,7 +14,7 @@ import {
   Badge,
   Spinner,
 } from "react-bootstrap";
-import { FaUtensils, FaClock, FaCheck } from "react-icons/fa";
+import { FaUtensils, FaClock, FaCheck, FaStickyNote } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function CocinaPage() {
@@ -22,19 +22,15 @@ export default function CocinaPage() {
   const [estados, setEstados] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // 🔄 Cargar datos iniciales + refresco automático
   useEffect(() => {
     cargar();
-    const intervalo = setInterval(() => {
-      cargar();
-    }, 15000);
+    const intervalo = setInterval(cargar, 15000);
     return () => clearInterval(intervalo);
   }, []);
 
   const cargar = async () => {
     try {
       setLoading(true);
-
       const fechaHoy = new Date().toISOString().split("T")[0];
 
       const [respEstados, respPedidos] = await Promise.all([
@@ -42,31 +38,18 @@ export default function CocinaPage() {
         listarPedidos({ fecha: fechaHoy }),
       ]);
 
-      console.log("📦 respEstados:", respEstados);
-      console.log("📦 respPedidos crudo:", respPedidos);
-
-      // respEstados SI trae {data}
       setEstados(respEstados.data);
 
-      // respPedidos YA ES EL ARRAY → NO tiene .data
-      const pedidosFiltrados = respPedidos.filter((p) =>
-        ["Pendiente", "En cocina"].includes(p.estado.nombre)
-      );
-
-      console.log("🔍 pedidosFiltrados:", pedidosFiltrados);
-
-      pedidosFiltrados.sort((a, b) => a.id - b.id);
+      const pedidosFiltrados = respPedidos
+        .filter((p) => ["Pendiente", "En cocina"].includes(p.estado.nombre))
+        .sort((a, b) => a.id - b.id);
 
       setPedidos(pedidosFiltrados);
     } catch (error) {
-      console.error(
-        "❌ Error en cargar:",
-        error.response?.data || error.message
-      );
       Swal.fire({
         icon: "error",
         title: "Error al cargar pedidos",
-        text: "Verifica tu conexión o los permisos del usuario.",
+        text: "Verifica tu conexión o permisos.",
         confirmButtonColor: "#a47551",
       });
     } finally {
@@ -80,8 +63,8 @@ export default function CocinaPage() {
       actual === "Pendiente"
         ? "En cocina"
         : actual === "En cocina"
-        ? "Listo"
-        : null;
+          ? "Listo"
+          : null;
 
     if (!siguiente) return;
 
@@ -92,33 +75,19 @@ export default function CocinaPage() {
       title: `¿Cambiar pedido #${pedido.id} a "${siguiente}"?`,
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Sí, cambiar",
-      cancelButtonText: "Cancelar",
       confirmButtonColor: "#a47551",
-      cancelButtonColor: "#6c757d",
-      background: "#fff8e7",
-      color: "#4b3a2f",
     });
 
     if (!confirm.isConfirmed) return;
 
-    setLoading(true);
     try {
+      setLoading(true);
       await actualizarEstadoPedido(pedido.id, estadoDestino.id);
-      Swal.fire({
-        icon: "success",
-        title: `Pedido #${pedido.id} → ${siguiente}`,
-        timer: 1500,
-        showConfirmButton: false,
-        background: "#fff8e7",
-        color: "#4b3a2f",
-      });
       cargar();
-    } catch (error) {
+    } catch {
       Swal.fire({
         icon: "error",
         title: "Error al actualizar",
-        text: "No se pudo cambiar el estado del pedido.",
         confirmButtonColor: "#d33",
       });
     } finally {
@@ -131,11 +100,11 @@ export default function CocinaPage() {
       <Container style={{ maxWidth: "1100px" }}>
         <div className="text-center mb-5">
           <h2 className="fw-bold text-brown">
-            🍳 Panel de Cocina – Pedidos en Preparación
+            🧊 Panel de pedidos en preparación
           </h2>
           <p className="text-muted">
-            Solo se muestran pedidos del <strong>día actual</strong> con estado{" "}
-            <strong>Pendiente</strong> o <strong>En cocina</strong>.
+            Pedidos del día en estado <strong>Pendiente</strong> o{" "}
+            <strong>En cocina</strong>.
           </p>
         </div>
 
@@ -144,16 +113,14 @@ export default function CocinaPage() {
             <Spinner animation="border" variant="warning" />
           </div>
         ) : pedidos.length === 0 ? (
-          <p className="text-center text-muted">
-            No hay pedidos pendientes por preparar.
-          </p>
+          <p className="text-center text-muted">No hay pedidos pendientes.</p>
         ) : (
           <Row className="g-4">
             {pedidos.map((p) => (
               <Col md={4} key={p.id}>
                 <Card className="shadow-sm border-0 rounded-4 h-100">
                   <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center mb-2">
+                    <div className="d-flex justify-content-between mb-2">
                       <h5 className="fw-bold mb-0">#{p.id}</h5>
                       <Badge
                         bg={
@@ -175,9 +142,20 @@ export default function CocinaPage() {
                       {p.cliente_nombre || "—"}
                     </p>
 
+                    {/* 📝 NOTAS GENERALES */}
+                    {p.notas && (
+                      <div className="bg-warning bg-opacity-10 p-2 rounded-3 mb-3">
+                        <p className="small mb-0">
+                          <FaStickyNote /> <strong>Notas del pedido:</strong>
+                        </p>
+                        <p className="small mb-0 text-muted">{p.notas}</p>
+                      </div>
+                    )}
+
                     <hr className="my-3" />
 
-                    <ul className="small mb-3" style={{ lineHeight: "1.4em" }}>
+                    {/* 🍹 DETALLES */}
+                    <ul className="small mb-3" style={{ lineHeight: "1.5em" }}>
                       {p.detalles?.length ? (
                         p.detalles.map((d) => (
                           <li key={d.id}>
@@ -186,6 +164,11 @@ export default function CocinaPage() {
                                 `${d.variante?.producto_nombre} - ${d.variante?.nombre_variante}`}
                             </strong>{" "}
                             × {d.cantidad}
+                            {d.notas && (
+                              <div className="text-muted fst-italic">
+                                📝 {d.notas}
+                              </div>
+                            )}
                           </li>
                         ))
                       ) : (

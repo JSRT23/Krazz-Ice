@@ -138,8 +138,8 @@ export default function ProductModal({ show, onHide, data }) {
                     setQty(
                       Math.min(
                         stock,
-                        Math.max(1, parseInt(e.target.value) || 1)
-                      )
+                        Math.max(1, parseInt(e.target.value) || 1),
+                      ),
                     )
                   }
                   style={{ width: 90 }}

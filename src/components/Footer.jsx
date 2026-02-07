@@ -7,7 +7,7 @@ export default function Footer() {
       className="text-white pt-5 pb-3 mt-auto"
       style={{
         backgroundColor: "#1f1f1f",
-        borderTop: "3px solid #ffc107",
+        borderTop: "3px solid #075eff",
       }}
     >
       <div className="container">
@@ -16,7 +16,7 @@ export default function Footer() {
           <div className="col-md-4">
             <h5 className="fw-bold d-flex align-items-center mb-3">
               <i
-                className="bi bi-cup-hot-fill text-warning me-2"
+                className="bi bi-cup-straw text-primary me-2"
                 style={{
                   fontSize: "1.6rem",
                   transform: "rotate(-8deg)",
@@ -29,11 +29,11 @@ export default function Footer() {
                   (e.target.style.transform = "rotate(-8deg)")
                 }
               ></i>
-              Coffee & Restaurant
+              KRAZZ ICE
             </h5>
             <p className="small text-white-50">
-              Donde el aroma del café se mezcla con momentos inolvidables. Ven,
-              disfruta y siente la experiencia.
+              Sabores que refrescan, conectan y acompañan cada plan, desde una
+              tarde relajada hasta una noche que no se olvida
             </p>
 
             {/* ICONOS DE REDES */}
@@ -47,12 +47,12 @@ export default function Footer() {
                 <a
                   key={social.icon}
                   href={social.url}
-                  className="text-warning fs-5"
+                  className="text-primary fs-5"
                   style={{
                     transition: "all 0.3s ease",
                   }}
                   onMouseEnter={(e) => (e.target.style.color = "#fff")}
-                  onMouseLeave={(e) => (e.target.style.color = "#ffc107")}
+                  onMouseLeave={(e) => (e.target.style.color = "#1d0aeadd")}
                 >
                   <i className={`bi bi-${social.icon}`}></i>
                 </a>
@@ -62,7 +62,7 @@ export default function Footer() {
 
           {/* ENLACES ÚTILES */}
           <div className="col-md-4">
-            <h6 className="fw-bold text-uppercase text-warning mb-3">
+            <h6 className="fw-bold text-uppercase text-primary mb-3">
               Enlaces
             </h6>
             <ul className="list-unstyled">
@@ -76,7 +76,7 @@ export default function Footer() {
                     href={item.to}
                     className="text-white-50 text-decoration-none d-flex align-items-center gap-2"
                     style={{ transition: "color 0.3s ease" }}
-                    onMouseEnter={(e) => (e.target.style.color = "#ffc107")}
+                    onMouseEnter={(e) => (e.target.style.color = "#2807ff")}
                     onMouseLeave={(e) => (e.target.style.color = "#adb5bd")}
                   >
                     <i className={`bi bi-${item.icon}`}></i> {item.label}
@@ -88,19 +88,19 @@ export default function Footer() {
 
           {/* CONTACTO */}
           <div className="col-md-4">
-            <h6 className="fw-bold text-uppercase text-warning mb-3">
+            <h6 className="fw-bold text-uppercase text-primary mb-3">
               Contacto
             </h6>
             <p className="small text-white-50 mb-2">
-              <i className="bi bi-geo-alt-fill text-warning me-2"></i>
-              Calle Ficticia 123, Ciudad
+              <i className="bi bi-geo-alt-fill text-primary me-2"></i>
+              Calle 4 # 10-65, Palo de agua
             </p>
             <p className="small text-white-50 mb-2">
-              <i className="bi bi-telephone-fill text-warning me-2"></i>
+              <i className="bi bi-telephone-fill text-primary me-2"></i>
               +123 456 7890
             </p>
             <p className="small text-white-50 mb-0">
-              <i className="bi bi-envelope-fill text-warning me-2"></i>
+              <i className="bi bi-envelope-fill text-primary me-2"></i>
               info@coffeehouse.com
             </p>
           </div>
@@ -111,10 +111,8 @@ export default function Footer() {
         <div className="text-center">
           <p className="small text-white-50 mb-0">
             &copy; {new Date().getFullYear()}{" "}
-            <span className="text-warning fw-semibold">
-              Coffee & Restaurant
-            </span>
-            . Todos los derechos reservados.
+            <span className="text-primary fw-semibold">Krazz Ice</span>. Todos
+            los derechos reservados.
           </p>
         </div>
       </div>

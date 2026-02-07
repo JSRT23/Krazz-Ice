@@ -32,7 +32,7 @@ export default function RealizarPedido() {
         Swal.fire(
           "Error",
           "No se pudieron cargar los métodos de pago",
-          "error"
+          "error",
         );
       }
     };
@@ -77,7 +77,7 @@ export default function RealizarPedido() {
       Swal.fire(
         "¡Listo!",
         "Tu pedido ha sido enviado correctamente",
-        "success"
+        "success",
       ).then(() => {
         vaciarCarrito();
         setNotas("");
@@ -88,7 +88,7 @@ export default function RealizarPedido() {
       Swal.fire(
         "Error",
         "No se pudo crear el pedido. Revisa la consola para más detalles.",
-        "error"
+        "error",
       );
     }
   };
@@ -144,14 +144,15 @@ export default function RealizarPedido() {
                 </div>
                 <div className="col-md-6">
                   <div className="card-body p-0 ps-3">
-                    <h5 className="card-title mb-1">
+                    <h5 className="card-title mb-1">{item.producto_nombre}</h5>
+                    <h6 className="card-title mb-1">
                       {item.nombre_variante || item.nombre}
-                    </h5>
+                    </h6>
                     <p className="text-muted mb-1">
                       {item.codigo_barra || "—"}
                     </p>
                     <p className="card-text mb-0">Cantidad: {item.cantidad}</p>
-                    <p className="card-text mb-0 fw-bold text-warning">
+                    <p className="card-text mb-0 fw-bold text-danger">
                       Precio unitario: ${item.precio.toLocaleString()}
                     </p>
                   </div>
@@ -159,7 +160,7 @@ export default function RealizarPedido() {
                 <div className="col-md-3 d-flex align-items-center justify-content-end pe-3">
                   <div>
                     <p className="fw-bold mb-0">Subtotal:</p>
-                    <p className="fw-bold text-warning">
+                    <p className="fw-bold text-danger">
                       ${(item.precio * item.cantidad).toLocaleString()}
                     </p>
                   </div>
@@ -179,7 +180,7 @@ export default function RealizarPedido() {
               <span>${total.toLocaleString()}</span>
             </div>
             <hr />
-            <div className="d-flex justify-content-between fw-bold text-warning">
+            <div className="d-flex justify-content-between fw-bold text-primary">
               <span>Total</span>
               <span>${total.toLocaleString()}</span>
             </div>
@@ -191,17 +192,20 @@ export default function RealizarPedido() {
               <p className="text-muted">Cargando métodos...</p>
             ) : (
               metodos.map((metodo) => (
-                <div key={metodo.id} className="form-check mb-2">
+                <div
+                  key={metodo.id}
+                  className="form-check mb-2 d-flex align-items-center"
+                >
                   <input
-                    className="form-check-input"
+                    className="form-check-input border border-secondary"
                     type="radio"
                     name="metodoPago"
                     value={metodo.id}
                     checked={metodoPago === metodo.id}
                     onChange={(e) => setMetodoPago(e.target.value)}
                   />
-                  <label className="form-check-label">
-                    <i className={`${obtenerIcono(metodo.nombre)} me-2`}></i>{" "}
+                  <label className="form-check-label ms-2 fw-semibold">
+                    <i className={`${obtenerIcono(metodo.nombre)} me-2`}></i>
                     {metodo.nombre}
                   </label>
                 </div>
@@ -220,7 +224,7 @@ export default function RealizarPedido() {
           </div>
 
           <button
-            className="btn btn-warning fw-bold w-100 mt-3"
+            className="btn btn-primary fw-bold w-100 mt-3"
             onClick={handleSubmit}
           >
             <i className="bi bi-check2-circle me-2"></i> Confirmar Pedido

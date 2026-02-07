@@ -1,5 +1,5 @@
-// src/components/Navbar.jsx
 import { Link } from "react-router-dom";
+import { useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCarrito } from "../context/CarritoContext";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -7,48 +7,55 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const { items } = useCarrito(); // ✅ Traer productos del carrito
+  const { items } = useCarrito();
 
-  // Contador total de productos
   const totalItems = items?.reduce((acc, item) => acc + item.cantidad, 0) || 0;
+
+  const navbarCollapseRef = useRef(null);
+
+  const closeNavbar = () => {
+    if (navbarCollapseRef.current?.classList.contains("show")) {
+      navbarCollapseRef.current.classList.remove("show");
+    }
+  };
 
   const navLinks = [];
 
-  // Mostrar Inicio, Menú y Nosotros SOLO para visitantes o clientes
   if (!user || user.rol === "CLIENTE") {
     navLinks.push(
       { to: "/", label: "Inicio", icon: "house-door" },
-      { to: "/menu", label: "Menú", icon: "cup-straw" }
+      { to: "/menu", label: "Menú", icon: "cup-straw" },
     );
 
     if (user) {
-      // Links exclusivos de cliente autenticado
       navLinks.push(
-        { to: "/reservas", label: "Reservas", icon: "calendar-heart" },
         { to: "/pedidos", label: "Pedidos", icon: "bag-check" },
-        { to: "/creditos", label: "Créditos", icon: "coin" },
-        { to: "/carrito", label: "Carrito", icon: "cart3" } // 🛒 Agregamos carrito
+        { to: "/carrito", label: "Carrito", icon: "cart3" },
       );
     }
 
-    // "Nosotros" siempre de último
-    navLinks.push({ to: "/nosotros", label: "Nosotros", icon: "info-circle" });
+    navLinks.push({
+      to: "/nosotros",
+      label: "Nosotros",
+      icon: "info-circle",
+    });
   }
 
-  //  Menú exclusivo para meseros
   if (user?.rol === "MESERO") {
     navLinks.push(
       { to: "/mesero", label: "Panel de Mesero", icon: "gear-fill" },
-      { to: "mesero/pedidos/nuevo", label: "Caja", icon: "clipboard-plus" },
-      { to: "mesero/pedidos/hoy", label: "Pedidos", icon: "bag-check" },
-      { to: "mesero/reservas", label: "Reservas", icon: "calendar-heart" },
-      { to: "mesero/creditos", label: "Créditos", icon: "coin" }
+      { to: "/mesero/pedidos/nuevo", label: "Caja", icon: "clipboard-plus" },
+      { to: "/mesero/pedidos/hoy", label: "Pedidos", icon: "bag-check" },
+      { to: "/Register", label: "Registrar clientes", icon: "person-plus" },
     );
   }
 
-  //  Menú exclusivo para cocineros
   if (user?.rol === "COCINERO") {
-    navLinks.push({ to: "cocina", label: "Cocina", icon: "egg-fried" });
+    navLinks.push({
+      to: "/cocina",
+      label: "Preparación",
+      icon: "cup-straw",
+    });
   }
 
   return (
@@ -60,11 +67,12 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           className="navbar-brand fw-bold d-flex align-items-center gap-2"
-          to="/"
+          to="#"
+          onClick={closeNavbar}
           style={{ fontFamily: "Poppins, sans-serif", letterSpacing: "0.5px" }}
         >
           <i
-            className="bi bi-cup-hot-fill text-warning"
+            className="bi bi-cup-straw text-primary"
             style={{
               fontSize: "1.8rem",
               transform: "rotate(-10deg)",
@@ -73,7 +81,7 @@ export default function Navbar() {
             onMouseEnter={(e) => (e.target.style.transform = "rotate(10deg)")}
             onMouseLeave={(e) => (e.target.style.transform = "rotate(-10deg)")}
           ></i>
-          <span className="text-light">Coffee & Restaurant</span>
+          <span className="text-light">KRAZZ ICE</span>
         </Link>
 
         <button
@@ -88,18 +96,25 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Menú de navegación */}
-        <div className="collapse navbar-collapse" id="navbarNav">
+        {/* Menú */}
+        <div
+          className="collapse navbar-collapse"
+          id="navbarNav"
+          ref={navbarCollapseRef}
+        >
           <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-3">
             {navLinks.map((item) => (
               <li className="nav-item position-relative" key={item.to}>
                 <Link
                   to={item.to}
+                  onClick={closeNavbar}
                   className="nav-link d-flex align-items-center gap-2 text-light fw-semibold position-relative"
                   style={{
                     transition: "color 0.3s ease, transform 0.2s ease",
                   }}
-                  onMouseEnter={(e) => (e.target.style.color = "#e4ce26ff")}
+                  onMouseEnter={(e) =>
+                    (e.target.style.color = "rgb(26, 89, 236)")
+                  }
                   onMouseLeave={(e) => (e.target.style.color = "#f8f9fa")}
                 >
                   <i
@@ -114,7 +129,6 @@ export default function Navbar() {
                   ></i>
                   {item.label}
 
-                  {/* 🔸 Badge del carrito */}
                   {item.icon === "cart3" && totalItems > 0 && (
                     <span
                       className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -127,7 +141,7 @@ export default function Navbar() {
               </li>
             ))}
 
-            {/* 🔹 Botón Login / Logout */}
+            {/* Login / Logout */}
             <li className="nav-item ms-lg-3 d-flex align-items-center gap-2">
               {user ? (
                 <>
@@ -135,15 +149,12 @@ export default function Navbar() {
                     👋 {user.username} ({user.rol})
                   </span>
                   <button
-                    onClick={logout}
-                    className="btn btn-outline-warning fw-semibold text-light px-3 py-1 rounded-pill d-flex align-items-center gap-2 shadow-sm"
+                    onClick={() => {
+                      logout();
+                      closeNavbar();
+                    }}
+                    className="btn btn-outline-primary fw-semibold text-light px-3 py-1 rounded-pill d-flex align-items-center gap-2 shadow-sm"
                     style={{ transition: "all 0.3s ease" }}
-                    onMouseEnter={(e) =>
-                      (e.target.style.transform = "scale(1.05)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.target.style.transform = "scale(1)")
-                    }
                   >
                     <i className="bi bi-box-arrow-right"></i>
                     Logout
@@ -152,12 +163,9 @@ export default function Navbar() {
               ) : (
                 <Link
                   to="/login"
-                  className="btn btn-warning fw-semibold text-dark px-3 py-1 rounded-pill d-flex align-items-center gap-2 shadow-sm"
+                  onClick={closeNavbar}
+                  className="btn btn-primary fw-semibold text-dark px-3 py-1 rounded-pill d-flex align-items-center gap-2 shadow-sm"
                   style={{ transition: "all 0.3s ease" }}
-                  onMouseEnter={(e) =>
-                    (e.target.style.transform = "scale(1.05)")
-                  }
-                  onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
                 >
                   <i className="bi bi-person-fill"></i>
                   Login

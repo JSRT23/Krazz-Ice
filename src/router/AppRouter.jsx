@@ -15,11 +15,7 @@ import VarianteDetalle from "../pages/VarianteDetalle";
 import Carrito from "../pages/clientes/Carrito";
 import RealizarPedido from "../pages/clientes/RealizarPedido";
 import Pedidos from "../pages/clientes/Pedidos";
-import NuevaReserva from "../pages/reservas/NuevaReserva";
-import CreditoPage from "../pages/credito/CreditoPage";
 import MisPedidos from "../pages/clientes/MisPedidos";
-import ReservasMesero from "../pages/mesero/ReservasMesero";
-import MeseroCredito from "../pages/mesero/CreditoMesero";
 
 export default function AppRouter() {
   return (
@@ -70,26 +66,6 @@ export default function AppRouter() {
         }
       />
 
-      {/* Reservas */}
-      <Route
-        path="/reservas"
-        element={
-          <PrivateRoute allowedRoles={["CLIENTE"]}>
-            <NuevaReserva />
-          </PrivateRoute>
-        }
-      />
-
-      {/* Finanzas */}
-      <Route
-        path="/creditos"
-        element={
-          <PrivateRoute allowedRoles={["CLIENTE"]}>
-            <CreditoPage />
-          </PrivateRoute>
-        }
-      />
-
       {/* Mesero */}
       <Route
         path="/mesero"
@@ -112,22 +88,6 @@ export default function AppRouter() {
         element={
           <PrivateRoute allowedRoles={["MESERO"]}>
             <ModificarPedidosPage />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/mesero/reservas"
-        element={
-          <PrivateRoute allowedRoles={["MESERO"]}>
-            <ReservasMesero />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/mesero/creditos"
-        element={
-          <PrivateRoute allowedRoles={["MESERO"]}>
-            <MeseroCredito />
           </PrivateRoute>
         }
       />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiCoffee } from "react-icons/fi";
+import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import axios from "../api/axios";
 
@@ -51,17 +51,16 @@ export default function Register() {
 
       Swal.fire({
         icon: "success",
-        title: "¡Cuenta creada!",
-        text: "Tu usuario fue registrado exitosamente. Ahora inicia sesión.",
-        confirmButtonColor: "#6f4e37",
-        background: "#fff",
+        title: "¡Bienvenido a KRAZZ ICE!",
+        text: "Tu cuenta fue creada correctamente ❄️",
+        confirmButtonColor: "#0072ff",
       }).then(() => navigate("/login"));
-    } catch (err) {
+    } catch {
       Swal.fire({
         icon: "error",
         title: "Error al registrarse",
         text: "Ocurrió un problema. Inténtalo de nuevo.",
-        confirmButtonColor: "#8B4513",
+        confirmButtonColor: "#0072ff",
       });
     } finally {
       setLoading(false);
@@ -73,34 +72,42 @@ export default function Register() {
       className="d-flex align-items-center justify-content-center"
       style={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(135deg, #f5f1ee 0%, #eae4de 50%, #f5f3f2 100%)",
+        background: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
         paddingTop: "100px",
         paddingBottom: "100px",
       }}
     >
-      <div
+      <motion.div
         className="card shadow-lg border-0 rounded-4"
         style={{
           width: "800px",
           backgroundColor: "#ffffff",
         }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
       >
         <div className="card-body p-5">
+          {/* LOGO */}
           <div className="text-center mb-4">
-            <div
-              className="rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3 shadow-sm"
+            <motion.img
+              src="public/LogoKrazz.jpeg"
+              alt="Krazz Ice"
               style={{
-                width: "75px",
-                height: "75px",
-                backgroundColor: "#6f4e37",
+                width: "120px",
+                height: "120px",
+                objectFit: "contain",
               }}
-            >
-              <FiCoffee size={35} color="#fff" />
-            </div>
-            <h2 className="fw-bold mt-2 text-dark">Crear cuenta</h2>
+              initial={{ scale: 0.85, rotate: -5 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.5 }}
+            />
+
+            <h2 className="fw-bold mt-3" style={{ color: "#0f2027" }}>
+              Crear cuenta
+            </h2>
             <p className="text-muted mb-4">
-              Únete a nuestra cafetería y disfruta de la mejor experiencia ☕
+              Regístrate y entra al mundo KRAZZ ICE ❄️
             </p>
           </div>
 
@@ -190,7 +197,7 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Confirmar contraseña */}
+              {/* Confirmar */}
               <div className="col-md-6 mb-4">
                 <label className="form-label fw-semibold">
                   Confirmar contraseña
@@ -216,47 +223,26 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Botón */}
+            {/* BOTÓN */}
             <div className="d-grid">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 type="submit"
                 className="btn text-white fw-semibold py-2"
                 disabled={loading}
                 style={{
-                  background:
-                    "linear-gradient(90deg, #8B4513 0%, #6f4e37 100%)",
-                  transition: "0.3s",
+                  background: "linear-gradient(135deg, #00c6ff, #0072ff)",
+                  border: "none",
+                  borderRadius: "10px",
                 }}
               >
-                {loading ? (
-                  <>
-                    <i className="bi bi-arrow-repeat me-2 spin"></i>
-                    Creando cuenta...
-                  </>
-                ) : (
-                  <>
-                    <i className="bi bi-person-plus me-2"></i>
-                    Crear cuenta
-                  </>
-                )}
-              </button>
+                {loading ? "Creando cuenta..." : "Crear cuenta"}
+              </motion.button>
             </div>
           </form>
-
-          <div className="text-center mt-4">
-            <p className="text-muted">
-              ¿Ya tienes cuenta?{" "}
-              <a
-                href="/login"
-                className="fw-semibold text-decoration-none"
-                style={{ color: "#6f4e37" }}
-              >
-                Inicia sesión aquí
-              </a>
-            </p>
-          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -41,7 +41,7 @@ export default function Pedidos() {
             Swal.fire(
               "Pedido Listo",
               `Tu pedido #${p.id} está listo para reclamar`,
-              "success"
+              "success",
             );
           }
         });
@@ -92,12 +92,12 @@ export default function Pedidos() {
                         p.estado?.nombre === "Pendiente"
                           ? "bg-warning text-dark"
                           : p.estado?.nombre === "En cocina"
-                          ? "bg-info text-white"
-                          : p.estado?.nombre === "Listo"
-                          ? "bg-success text-white"
-                          : p.estado?.nombre === "Entregado"
-                          ? "bg-secondary text-white"
-                          : "bg-danger text-white"
+                            ? "bg-info text-white"
+                            : p.estado?.nombre === "Listo"
+                              ? "bg-success text-white"
+                              : p.estado?.nombre === "Entregado"
+                                ? "bg-secondary text-white"
+                                : "bg-danger text-white"
                       }`}
                     >
                       {p.estado?.nombre || "Desconocido"}
@@ -146,12 +146,12 @@ export default function Pedidos() {
                         p.estado?.nombre === "Pendiente"
                           ? "bg-warning text-dark"
                           : p.estado?.nombre === "En cocina"
-                          ? "bg-info text-white"
-                          : p.estado?.nombre === "Listo"
-                          ? "bg-success text-white"
-                          : p.estado?.nombre === "Entregado"
-                          ? "bg-secondary text-white"
-                          : "bg-danger text-white"
+                            ? "bg-info text-white"
+                            : p.estado?.nombre === "Listo"
+                              ? "bg-success text-white"
+                              : p.estado?.nombre === "Entregado"
+                                ? "bg-secondary text-white"
+                                : "bg-danger text-white"
                       }`}
                     >
                       {p.estado?.nombre || "Desconocido"}
@@ -180,7 +180,7 @@ export default function Pedidos() {
       )}
 
       <div className="text-center mt-4">
-        <Button variant="outline-warning" onClick={() => nav("/pedidos/todos")}>
+        <Button variant="outline-primary" onClick={() => nav("/pedidos/todos")}>
           Ver todos mis pedidos
         </Button>
       </div>
@@ -200,12 +200,12 @@ export default function Pedidos() {
             modalData?.estado?.nombre === "Pendiente"
               ? "bg-warning"
               : modalData?.estado?.nombre === "En cocina"
-              ? "bg-info text-white"
-              : modalData?.estado?.nombre === "Listo"
-              ? "bg-success text-white"
-              : modalData?.estado?.nombre === "Entregado"
-              ? "bg-secondary text-white"
-              : "bg-danger text-white"
+                ? "bg-info text-white"
+                : modalData?.estado?.nombre === "Listo"
+                  ? "bg-success text-white"
+                  : modalData?.estado?.nombre === "Entregado"
+                    ? "bg-secondary text-white"
+                    : "bg-danger text-white"
           }`}
         >
           <div className="d-flex align-items-center gap-2">
@@ -297,7 +297,7 @@ export default function Pedidos() {
                             {
                               style: "currency",
                               currency: "COP",
-                            }
+                            },
                           )}{" "}
                           c/u
                         </small>

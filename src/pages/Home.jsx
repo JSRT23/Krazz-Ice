@@ -4,13 +4,13 @@ import { Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import {
-  FaCoffee,
-  FaUtensils,
+  FaPhone,
   FaStar,
   FaLeaf,
-  FaHeart,
   FaClock,
   FaArrowRight,
+  FaMapPin,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import ProductCarousel from "../components/ProductCarousel";
@@ -26,8 +26,7 @@ export default function Home() {
       <section
         className="text-center text-light d-flex align-items-center"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1511920170033-f8396924c348?w=1600')",
+          backgroundImage: "url('/fondo.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "100vh",
@@ -46,16 +45,15 @@ export default function Home() {
             className="fw-bold display-4 mb-3"
             style={{ fontFamily: "Poppins, sans-serif", letterSpacing: "1px" }}
           >
-            Bienvenido a{" "}
-            <span className="text-warning">Coffee & Restaurant</span>
+            Bienvenido a <span className="text-primary">Krazz Ice</span>
           </motion.h1>
           <p className="lead mb-4 text-light fs-5">
-            Donde el aroma del café se mezcla con los mejores sabores de la
-            cocina.
+            Sabores que refrescan, conectan y acompañan cada plan, desde una
+            tarde relajada hasta una noche que no se olvida
           </p>
           <motion.div whileHover={{ scale: 1.05 }}>
             <Button
-              variant="warning"
+              variant="primary"
               size="lg"
               className="fw-semibold rounded-pill px-4 shadow-lg"
               onClick={() => navigate("/menu")}
@@ -76,7 +74,7 @@ export default function Home() {
 
       {/* NUEVOS PRODUCTOS - DESLIZABLE */}
       <ProductCarousel
-        title="Nuevas Delicias"
+        title="Nuevos Sabores"
         icon={<FaLeaf className="text-success me-2" />}
         endpoint="productos/nuevos"
         color={{ bg: "#fff" }}
@@ -88,20 +86,27 @@ export default function Home() {
           <Row className="align-items-center">
             <Col md={6}>
               <motion.img
-                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800"
-                alt="Café y ambiente"
+                src="/Nosotros(KrazzIce).jpeg"
+                alt="Atardecer"
                 className="img-fluid rounded-4 shadow"
+                style={{
+                  width: "550px",
+                  height: "450px",
+                  objectFit: "cover",
+                }}
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
               />
             </Col>
             <Col md={6} className="mt-4 mt-md-0">
-              <h2 className="fw-bold text-brown mb-3">☕ Sobre Nosotros</h2>
+              <h2 className="fw-bold text-brown mb-3">Sobre Nosotros</h2>
               <p className="text-muted mb-3">
-                En <strong>Coffee & Restaurant</strong> nos apasiona ofrecer
-                experiencias únicas. Desde una taza de café artesanal hasta
-                platos gourmet con ingredientes frescos y locales.
+                En <strong>Krazz Ice</strong> nos mueve crear momentos que se
+                sienten tan bien como saben. Creemos en el poder de un buen
+                granizado para acompañar cada plan, desde una tarde relajada con
+                amigos o familia, hasta una noche llena de música, risas y buena
+                vibra.
               </p>
               <p className="text-muted">
                 Ven a disfrutar de un ambiente acogedor, buena música y atención
@@ -109,7 +114,7 @@ export default function Home() {
                 simplemente relajarte!
               </p>
               <Button
-                variant="warning"
+                variant="primary"
                 className="fw-semibold mt-3 px-4 rounded-pill"
                 onClick={() => navigate("/nosotros")}
               >
@@ -125,23 +130,25 @@ export default function Home() {
         <Container>
           <Row className="text-center">
             <Col md={4}>
-              <FaClock className="display-5 text-warning mb-3" />
+              <FaClock className="display-5 text-primary mb-3" />
               <h5 className="fw-bold">Horarios</h5>
               <p className="text-light small mb-0">
-                Lunes a Viernes: 7am - 9pm
+                Lunes a Viernes: 6pm - 11pm
               </p>
-              <p className="text-light small">Sábados y Domingos: 8am - 10pm</p>
+              <p className="text-light small">
+                Sábados y Domingos: 7pm - 12:30am
+              </p>
             </Col>
             <Col md={4}>
-              <FaUtensils className="display-5 text-warning mb-3" />
+              <FaMapMarkerAlt className="display-5 text-primary mb-3" />
               <h5 className="fw-bold">Dirección</h5>
-              <p className="text-light small mb-0">Calle 45 #12-34, Bogotá</p>
-              <p className="text-light small">Zona Gastronómica</p>
+              <p className="text-light small mb-0">calle 4 # 10-65</p>
+              <p className="text-light small">Palo de agua Lorica-Córdoba</p>
             </Col>
             <Col md={4}>
-              <FaCoffee className="display-5 text-warning mb-3" />
+              <FaPhone className="display-5 text-primary mb-3" />
               <h5 className="fw-bold">Contáctanos</h5>
-              <p className="text-light small mb-0">📞 +57 321 654 7890</p>
+              <p className="text-light small mb-0"> +57 321 654 7890</p>
               <p className="text-light small">📧 contacto@coffeeandrest.co</p>
             </Col>
           </Row>

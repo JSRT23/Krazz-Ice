@@ -16,14 +16,14 @@ export const crearPedido = async (token, metodoPagoId, tipo = "externo") => {
     headers: { Authorization: `Bearer ${token}` },
   });
   const pendienteEstado = estadosResp.data.find(
-    (e) => e.nombre === "Pendiente"
+    (e) => e.nombre === "Pendiente",
   );
   if (!pendienteEstado) throw new Error("No se encontró el estado 'Pendiente'");
 
   const { data } = await axios.post(
     PEDIDOS_URL,
     { metodo_pago_id: metodoPagoId, tipo, estado_id: pendienteEstado.id },
-    { headers: { Authorization: `Bearer ${token}` } }
+    { headers: { Authorization: `Bearer ${token}` } },
   );
   return data;
 };

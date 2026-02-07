@@ -54,7 +54,7 @@ export default function CrearPedidoPage() {
 
       // Estado por defecto: "Pendiente"
       const estadoPendiente = respEst.data.find(
-        (e) => e.nombre.toLowerCase() === "pendiente"
+        (e) => e.nombre.toLowerCase() === "pendiente",
       );
       if (estadoPendiente) setEstadoPedido(estadoPendiente.id);
     } catch {
@@ -75,7 +75,7 @@ export default function CrearPedidoPage() {
       p.codigo_barras || ""
     }`
       .toLowerCase()
-      .includes(busqueda.toLowerCase())
+      .includes(busqueda.toLowerCase()),
   );
 
   const agregar = (producto) => {
@@ -85,7 +85,7 @@ export default function CrearPedidoPage() {
         icon: "warning",
         title: "Sin stock disponible",
         text: "Este producto no tiene unidades disponibles.",
-        confirmButtonColor: "#f0ad4e",
+        confirmButtonColor: "#3473f2",
       });
       return;
     }
@@ -95,14 +95,14 @@ export default function CrearPedidoPage() {
       if (existe) {
         if (existe.cantidad < disponible) {
           return prev.map((p) =>
-            p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p
+            p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p,
           );
         }
         Swal.fire({
           icon: "info",
           title: "Stock máximo alcanzado",
           text: `Solo hay ${disponible} unidades disponibles.`,
-          confirmButtonColor: "#f0ad4e",
+          confirmButtonColor: "#417ae3",
         });
         return prev;
       }
@@ -128,16 +128,16 @@ export default function CrearPedidoPage() {
       prev.map((p) =>
         p.id === id && p.cantidad < p.stock_disponible
           ? { ...p, cantidad: p.cantidad + 1 }
-          : p
-      )
+          : p,
+      ),
     );
   };
 
   const disminuir = (id) => {
     setCarrito((prev) =>
       prev.map((p) =>
-        p.id === id ? { ...p, cantidad: Math.max(1, p.cantidad - 1) } : p
-      )
+        p.id === id ? { ...p, cantidad: Math.max(1, p.cantidad - 1) } : p,
+      ),
     );
   };
 
@@ -149,7 +149,7 @@ export default function CrearPedidoPage() {
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-      confirmButtonColor: "#a47551",
+      confirmButtonColor: "#3d74e3",
       cancelButtonColor: "#6c757d",
       background: "#fff8e7",
       color: "#4b3a2f",
@@ -164,7 +164,7 @@ export default function CrearPedidoPage() {
       return Swal.fire({
         icon: "warning",
         title: "Selecciona un método de pago",
-        confirmButtonColor: "#f0ad4e",
+        confirmButtonColor: "#3e77ef",
       });
     }
 
@@ -172,7 +172,7 @@ export default function CrearPedidoPage() {
       return Swal.fire({
         icon: "warning",
         title: "Selecciona un estado del pedido",
-        confirmButtonColor: "#f0ad4e",
+        confirmButtonColor: "#3e77ef",
       });
     }
 
@@ -181,7 +181,7 @@ export default function CrearPedidoPage() {
         icon: "info",
         title: "Carrito vacío",
         text: "Agrega productos antes de crear el pedido.",
-        confirmButtonColor: "#f0ad4e",
+        confirmButtonColor: "#3876f2",
       });
     }
 
@@ -199,7 +199,7 @@ export default function CrearPedidoPage() {
             icon: "warning",
             title: "Cliente no encontrado",
             text: `No se encontró ningún cliente con el usuario ${cliente}.`,
-            confirmButtonColor: "#a47551",
+            confirmButtonColor: "#3876f2",
           });
         }
       }
@@ -227,7 +227,7 @@ export default function CrearPedidoPage() {
         icon: "success",
         title: "Pedido creado con éxito",
         text: `El pedido #${pedido.id} se ha registrado correctamente.`,
-        confirmButtonColor: "#a47551",
+        confirmButtonColor: "#3876f2",
         background: "#fff8e7",
         color: "#4b3a2f",
         showCloseButton: true,
@@ -262,7 +262,7 @@ export default function CrearPedidoPage() {
         style={{ maxWidth: "1200px" }}
       >
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <h3 className="text-brown fw-bold">☕ Crear Pedido</h3>
+          <h3 className="text-brown fw-bold">🧊 Crear Pedido Krazz Ice</h3>
           <span className="text-muted small">
             Mesero: <strong>{empleado?.username || "—"}</strong>
           </span>
@@ -349,11 +349,11 @@ export default function CrearPedidoPage() {
                           codigo: {p.codigo_barras}
                         </Card.Text>
                         <Card.Text className="text-muted small">
-                          Stock: {stockDisponible(p)} | Precio: ${p.precio}
+                          Cantidad: {stockDisponible(p)} | Precio: ${p.precio}
                         </Card.Text>
                       </div>
                       <Button
-                        variant="outline-warning"
+                        variant="outline-primary"
                         onClick={() => agregar(p)}
                         disabled={stockDisponible(p) <= 0}
                       >
@@ -432,19 +432,19 @@ export default function CrearPedidoPage() {
                           .reduce(
                             (total, item) =>
                               total + item.precio * item.cantidad,
-                            0
+                            0,
                           )
                           .toFixed(2)}
                       </span>
                     </div>
                     <div className="text-center mt-4">
                       <Button
-                        variant="warning"
+                        variant="primary"
                         className="px-4"
                         onClick={crear}
                         disabled={loading}
                       >
-                        {loading ? "Creando..." : "✅ Confirmar Pedido"}
+                        {loading ? "Creando..." : " Confirmar Pedido ✅ "}
                       </Button>
                     </div>
                   </>

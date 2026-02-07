@@ -45,7 +45,7 @@ export default function DetallePedidoModal({ modalData, closeModal }) {
             <Modal.Header
               closeButton
               className={`text-white py-3 px-4 border-0 ${estadoColor(
-                modalData?.estado?.nombre
+                modalData?.estado?.nombre,
               )}`}
             >
               <Modal.Title className="d-flex align-items-center gap-3 fs-4 fw-semibold">
@@ -128,7 +128,7 @@ export default function DetallePedidoModal({ modalData, closeModal }) {
                               src={
                                 item.variante.imagen_variante ||
                                 item.variante.imagen_producto ||
-                                "https://via.placeholder.com/80"
+                                "/sin-imagen.jpg"
                               }
                               roundedCircle
                               className="shadow-sm"

@@ -9,22 +9,32 @@ export default function HomeMesero() {
     {
       title: "Realizar Pedido",
       description:
-        "Crea un nuevo pedido desde cero, selecciona productos y confirma la orden.",
-      emoji: "🍔",
+        "Crea un nuevo pedido desde cero, selecciona tus granizados y confirma la orden.",
+      emoji: "🍧",
       btnText: "Ir a crear →",
-      color: "#f8b400",
+      color: "#00c6ff",
       route: "/mesero/pedidos/nuevo",
-      img: "https://cdn.pixabay.com/photo/2016/03/05/19/02/hamburger-1238246_960_720.jpg",
+      img: "/fondo.webp",
     },
     {
       title: "Modificar Pedidos",
       description:
-        "Consulta los pedidos del día y actualiza su estado según su progreso.",
-      emoji: "📋",
+        "Consulta los pedidos del día y actualiza su estado en tiempo real.",
+      emoji: "🧊",
       btnText: "Ver pedidos →",
-      color: "#0d6efd",
+      color: "#0072ff",
       route: "/mesero/pedidos/hoy",
-      img: "https://cdn.pixabay.com/photo/2017/02/05/17/54/coffee-2047963_960_720.jpg",
+      img: "public/nosotros(KrazzIce).jpeg",
+    },
+    {
+      title: "Registrar Cliente",
+      description:
+        "Registra nuevos clientes para agilizar pedidos y mejorar la atención.",
+      emoji: "🧑‍💼",
+      btnText: "Nuevo cliente →",
+      color: "#00b894",
+      route: "/register",
+      img: "/Logokrazz.jpeg",
     },
   ];
 
@@ -32,25 +42,26 @@ export default function HomeMesero() {
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center"
       style={{
-        background: "linear-gradient(135deg, #fff3e0, #ffe0b2)",
-        padding: "50px 0",
+        background: "linear-gradient(135deg, #e0f7fa, #b2ebf2)",
+        padding: "50px 20px",
       }}
     >
-      <div className="container">
+      {/* 🔑 container-fluid para que entren 3 */}
+      <div className="container-fluid" style={{ maxWidth: "1400px" }}>
         <div className="row g-4 justify-content-center">
           {cards.map((card, index) => (
             <motion.div
               key={index}
-              className="col-12 col-md-6 col-lg-5"
+              className="col-12 col-md-6 col-lg-4"
               whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.97 }}
             >
               <div
                 className="card border-0 shadow-lg h-100 overflow-hidden"
                 style={{
-                  borderRadius: "1.5rem",
-                  transition: "all 0.4s ease",
+                  borderRadius: "2rem",
                   cursor: "pointer",
+                  background: "#ffffff",
                 }}
                 onClick={() => navigate(card.route)}
               >
@@ -62,8 +73,7 @@ export default function HomeMesero() {
                     className="w-100 h-100"
                     style={{
                       objectFit: "cover",
-                      filter: "brightness(0.9)",
-                      transition: "all 0.4s ease",
+                      filter: "brightness(0.85)",
                     }}
                   />
                   <motion.div
@@ -79,22 +89,20 @@ export default function HomeMesero() {
 
                 {/* Contenido */}
                 <div className="card-body text-center p-4">
-                  <div
-                    className="display-5 mb-3"
-                    style={{ transition: "transform 0.3s ease" }}
-                  >
-                    {card.emoji}
-                  </div>
-                  <h4 className="fw-bold mb-3 text-dark">{card.title}</h4>
-                  <p className="text-muted mb-4">{card.description}</p>
+                  <div className="display-4 mb-3">{card.emoji}</div>
+                  <h4 className="fw-bold mb-3" style={{ color: card.color }}>
+                    {card.title}
+                  </h4>
+                  <p className="text-secondary mb-4">{card.description}</p>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="btn text-white fw-semibold px-4 py-2"
+                    className="btn text-white fw-bold px-5 py-2"
                     style={{
-                      backgroundColor: card.color,
+                      background: `linear-gradient(90deg, ${card.color}, #00aaff)`,
                       borderRadius: "30px",
                       border: "none",
+                      boxShadow: `0 6px 12px ${card.color}66`,
                     }}
                   >
                     {card.btnText}

@@ -5,8 +5,21 @@ import { FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { productosService } from "../services/productosService";
 
-const src = (path) =>
-  path ? (path.startsWith("http") ? path : `http://localhost:8000${path}`) : "";
+/**
+ * 🔗 URL base del backend (SIN /api para imágenes)
+ */
+const BACKEND_URL = (
+  import.meta.env.VITE_API_URL || "https://planchon.pythonanywhere.com/api"
+).replace("/api", "");
+
+/**
+ * 🖼️ Siempre devuelve una imagen válida
+ */
+const buildImageSrc = (path) => {
+  if (!path) return "/sin-imagen.jpg";
+  if (path.startsWith("http")) return path;
+  return `${BACKEND_URL}${path}`;
+};
 
 export default function ProductCarousel({ title, icon, endpoint, color }) {
   const navigate = useNavigate();
@@ -24,8 +37,8 @@ export default function ProductCarousel({ title, icon, endpoint, color }) {
         const res = await service();
         setProductos(res.data);
       } catch (err) {
-        setError("No se pudieron cargar los productos");
         console.error(err);
+        setError("No se pudieron cargar los productos");
       } finally {
         setLoading(false);
       }
@@ -34,14 +47,15 @@ export default function ProductCarousel({ title, icon, endpoint, color }) {
     fetchProductos();
   }, [endpoint]);
 
-  if (loading)
+  if (loading) {
     return (
       <div className="text-center py-5" style={{ background: color.bg }}>
         <Spinner animation="border" variant="warning" />
       </div>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <div
         className="text-center py-5 text-danger"
@@ -50,6 +64,7 @@ export default function ProductCarousel({ title, icon, endpoint, color }) {
         {error}
       </div>
     );
+  }
 
   return (
     <section className="py-5" style={{ background: color.bg }}>
@@ -70,67 +85,81 @@ export default function ProductCarousel({ title, icon, endpoint, color }) {
           style={{ scrollSnapType: "x mandatory" }}
         >
           {productos.map((prod) =>
-            prod.variantes.map((varnt) => (
-              <div
-                key={varnt.id} // ✅ usar id de variante
-                className="flex-shrink-0"
-                style={{ scrollSnapAlign: "start", width: "280px" }}
-              >
-                <motion.div whileHover={{ scale: 1.03 }}>
-                  <Card className="border-0 shadow-lg rounded-4 h-100">
-                    <Card.Img
-                      variant="top"
-                      src={src(varnt.imagen_variante || prod.imagen)}
-                      alt={varnt.nombre_variante}
-                      className="rounded-top-4"
-                      style={{
-                        height: "220px",
-                        objectFit: "cover",
-                        borderBottom: "2px solid #f8f9fa",
-                      }}
-                    />
-                    <Card.Body className="d-flex flex-column">
-                      <Card.Title className="fw-bold mb-1 text-dark">
-                        {prod.nombre}
-                      </Card.Title>
-                      <Card.Text className="text-muted small mb-2">
-                        {varnt.nombre_variante}
-                      </Card.Text>
+            prod.variantes.map((varnt) => {
+              const imageSrc = buildImageSrc(
+                varnt.imagen_variante || prod.imagen,
+              );
 
-                      <div className="mt-auto d-flex justify-content-between align-items-center">
-                        <span className="fw-bold text-warning fs-5">
-                          ${varnt.precio.toFixed(2)}
-                        </span>
+              return (
+                <div
+                  key={varnt.id}
+                  className="flex-shrink-0"
+                  style={{ scrollSnapAlign: "start", width: "280px" }}
+                >
+                  <motion.div whileHover={{ scale: 1.03 }}>
+                    <Card className="border-0 shadow-lg rounded-4 h-100">
+                      <Card.Img
+                        variant="top"
+                        src={imageSrc}
+                        alt={varnt.nombre_variante || "Sin imagen"}
+                        className="rounded-top-4"
+                        style={{
+                          height: "220px",
+                          objectFit: "cover",
+                          borderBottom: "2px solid #f8f9fa",
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.src = "/sin-imagen.jpg";
+                        }}
+                      />
 
-                        <Button
-                          variant={
-                            title.includes("Vendidos")
-                              ? "outline-warning"
-                              : "success"
-                          }
-                          size="sm"
-                          onClick={() =>
-                            navigate(`/producto/variante/${varnt.id}`, {
-                              state: { producto: prod, variante: varnt }, // ✅ pasar variante real
-                            })
-                          }
-                        >
-                          {title.includes("Vendidos") ? (
-                            <>
-                              <FaStar className="me-1" /> Ordenar
-                            </>
-                          ) : (
-                            <>
-                              <FaHeart className="me-1" /> Probar
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </motion.div>
-              </div>
-            ))
+                      <Card.Body className="d-flex flex-column">
+                        <Card.Title className="fw-bold mb-1 text-dark">
+                          {prod.nombre}
+                        </Card.Title>
+
+                        <Card.Text className="text-muted small mb-2">
+                          {varnt.nombre_variante}
+                        </Card.Text>
+
+                        <div className="mt-auto d-flex justify-content-between align-items-center">
+                          <span className="fw-bold text-warning fs-5">
+                            ${varnt.precio.toFixed(2)}
+                          </span>
+
+                          <Button
+                            variant={
+                              title.includes("Vendidos")
+                                ? "outline-warning"
+                                : "success"
+                            }
+                            size="sm"
+                            onClick={() =>
+                              navigate(`/producto/variante/${varnt.id}`, {
+                                state: {
+                                  producto: prod,
+                                  variante: varnt,
+                                },
+                              })
+                            }
+                          >
+                            {title.includes("Vendidos") ? (
+                              <>
+                                <FaStar className="me-1" /> Ordenar
+                              </>
+                            ) : (
+                              <>
+                                <FaHeart className="me-1" /> Probar
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  </motion.div>
+                </div>
+              );
+            }),
           )}
         </div>
       </div>

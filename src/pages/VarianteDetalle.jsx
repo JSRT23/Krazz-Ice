@@ -63,15 +63,14 @@ export default function VarianteDetalle() {
         title: "¡Stock insuficiente!",
         text: `Solo quedan ${
           variante.stock_disponible - cantidadExistente
-        } unidades disponibles de esta variante.`,
+        } unidades disponibles.`,
       });
       return;
     }
 
-    // Preparar objeto para carrito incluyendo codigo_barras e imagen
     const itemCarrito = {
       id: variante.id,
-      key: key,
+      key,
       producto_nombre: variante.nombre,
       nombre_variante: variante.nombre_variante,
       precio: variante.precio,
@@ -98,7 +97,7 @@ export default function VarianteDetalle() {
   return (
     <Container className="d-flex justify-content-center align-items-center mt-5 mb-5">
       <Card className="detalle-card shadow-lg border-0 rounded-4 p-4">
-        <div className="d-flex justify-content-start mb-3">
+        <div className="mb-3">
           <Button
             variant="light"
             className="btn-volver shadow-sm"
@@ -109,6 +108,7 @@ export default function VarianteDetalle() {
         </div>
 
         <Row className="align-items-center g-4">
+          {/* IMAGEN */}
           <Col md={6} className="text-center">
             <motion.div
               whileHover={{ scale: 1.03 }}
@@ -119,10 +119,10 @@ export default function VarianteDetalle() {
                 <img
                   src={variante.imagen_variante || variante.imagen}
                   alt={variante.nombre_variante}
-                  className="img-fluid rounded-4 shadow-sm imagen-fija"
+                  className="imagen-fija rounded-4 shadow-sm"
                 />
               ) : (
-                <div className="no-image bg-light rounded-4 d-flex flex-column align-items-center justify-content-center border border-2 text-muted">
+                <div className="no-image rounded-4 border border-2 text-muted d-flex flex-column align-items-center justify-content-center">
                   <FaBox size={70} className="mb-3" />
                   <p>Sin imagen disponible</p>
                 </div>
@@ -130,28 +130,26 @@ export default function VarianteDetalle() {
             </motion.div>
           </Col>
 
+          {/* DETALLE */}
           <Col md={6}>
-            <h2 className="fw-bold text-dark mb-1">
-              {variante.nombre_variante}
-            </h2>
-
+            <h2 className="fw-bold mb-2">{variante.nombre_variante}</h2>
             <p className="text-secondary mb-2">
-              <FaTag className="text-primary me-2" />
-              <strong>Código:</strong> {variante.sku}
+              <FaTag className="me-2 text-primary" />
+              <strong>SKU:</strong> {variante.sku}
             </p>
 
-            <p className="text-muted mb-4">
-              <FaBarcode className="text-dark me-2" />
+            <p className="text-muted mb-3">
+              <FaBarcode className="me-2 text-primary" />
               <strong>Código de barras:</strong> {variante.codigo_barras || "—"}
             </p>
 
             <p className="text-secondary mb-4">
-              <FaWarehouse className="text-warning me-2" />
+              <FaWarehouse className="me-2 text-warning" />
               <strong>Stock disponible:</strong> {variante.stock_disponible}
             </p>
 
-            <div className="mt-3 d-flex align-items-center gap-3">
-              <span className="text-muted">Cantidad:</span>
+            <div className="d-flex align-items-center gap-3 mb-4">
+              <span>Cantidad:</span>
               <Form.Control
                 type="number"
                 min={1}
@@ -163,45 +161,46 @@ export default function VarianteDetalle() {
                       1,
                       Math.min(
                         parseInt(e.target.value) || 1,
-                        variante.stock_disponible
-                      )
-                    )
+                        variante.stock_disponible,
+                      ),
+                    ),
                   )
                 }
                 style={{ width: 90 }}
               />
             </div>
 
-            <div className="mt-4 d-flex align-items-center justify-content-between">
-              <h3 className="fw-bold text-dark mb-0 precio-detalle">
+            <div className="d-flex align-items-center justify-content-between">
+              <h3 className="fw-bold mb-0">
                 {parseFloat(variante.precio).toLocaleString("es-CO", {
                   style: "currency",
                   currency: "COP",
                 })}
               </h3>
 
-              <OverlayTrigger
-                placement="top"
-                overlay={
-                  !isLoggedIn ? (
-                    <Tooltip id="tooltip-disabled">
-                      🔒 Inicia sesión para agregar al carrito
-                    </Tooltip>
-                  ) : (
-                    <></>
-                  )
-                }
-              >
-                <span className="d-inline-block">
-                  <Button
-                    className="btn-agregar px-4 py-2 d-flex align-items-center gap-2"
-                    disabled={!isLoggedIn}
-                    onClick={handleAdd}
-                  >
-                    <FaShoppingCart /> Agregar al carrito
-                  </Button>
-                </span>
-              </OverlayTrigger>
+              {/* BOTÓN CORREGIDO */}
+              {!isLoggedIn ? (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip>🔒 Inicia sesión para agregar</Tooltip>}
+                >
+                  <span>
+                    <Button
+                      className="btn-agregar d-flex align-items-center gap-2 px-4 py-2"
+                      disabled
+                    >
+                      <FaShoppingCart /> Agregar al carrito
+                    </Button>
+                  </span>
+                </OverlayTrigger>
+              ) : (
+                <Button
+                  className="btn-agregar d-flex align-items-center gap-2 px-4 py-2"
+                  onClick={handleAdd}
+                >
+                  <FaShoppingCart /> Agregar al carrito
+                </Button>
+              )}
             </div>
           </Col>
         </Row>

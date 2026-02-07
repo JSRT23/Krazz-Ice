@@ -20,29 +20,40 @@ body {
     transform: scale(1.01);
 }
 
-/* 🖼 Imagen del producto */
+/* 🖼 CONTENEDOR DE IMAGEN (TAMAÑO FIJO) */
 .image-container {
+    width: 100%;
+    height: 440px;
+    /* 🔥 tamaño fijo */
     overflow: hidden;
     border-radius: 20px;
     position: relative;
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.image-container img {
+/* 🖼 IMAGEN */
+.image-container img,
+.imagen-fija {
     width: 100%;
-    height: 440px;
+    height: 100%;
     object-fit: cover;
+    /* 🔥 clave */
     border-radius: 20px;
     transition: transform 0.6s ease;
 }
 
+/* 🔍 Hover solo si hay imagen */
 .image-container:hover img {
     transform: scale(1.1);
 }
 
-/* 🪶 Imagen de respaldo */
+/* 🪶 Imagen de respaldo (MISMO TAMAÑO) */
 .no-image {
-    height: 440px;
     width: 100%;
+    height: 100%;
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -72,21 +83,23 @@ body {
 
 /* 🛒 Botón de agregar al carrito */
 .btn-agregar {
-    background-color: #ffcc00;
-    color: #000;
+    background-color: #0d6efd;
+    /* Bootstrap primary */
+    color: #fff;
     border: none;
     border-radius: 12px;
     font-weight: 600;
     padding: 10px 24px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.35);
 }
 
 .btn-agregar:hover:not(:disabled) {
-    background-color: #ffd633;
+    background-color: #0b5ed7;
+    /* primary hover */
     color: #fff;
     transform: scale(1.07);
-    box-shadow: 0 6px 16px rgba(255, 204, 0, 0.5);
+    box-shadow: 0 6px 16px rgba(13, 110, 253, 0.55);
 }
 
 /* 🚫 Estado deshabilitado */
@@ -109,7 +122,7 @@ body {
     transform: scale(1.05);
 }
 
-/* 💬 Tooltip (para usuarios no registrados) */
+/* 💬 Tooltip */
 .tooltip-inner {
     background-color: #333 !important;
     color: #fff !important;
@@ -129,9 +142,9 @@ body {
         max-width: 95%;
     }
 
-    .image-container img,
-    .no-image {
+    .image-container {
         height: 350px;
+        /* 🔥 sigue siendo fijo en mobile */
     }
 
     .precio-detalle {

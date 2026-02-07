@@ -4,7 +4,7 @@ import { refreshToken, logout } from "../services/authServices";
 
 const instance = axios.create({
   baseURL:
-    import.meta.env.VITE_API_URL || "https://juansrt23.pythonanywhere.com/api",
+    import.meta.env.VITE_API_URL || "https://planchon.pythonanywhere.com/api",
   timeout: 8000,
 });
 

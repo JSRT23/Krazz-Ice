@@ -137,7 +137,7 @@ export default function ModificarPedidosPage() {
     <main className="bg-light min-vh-100 py-5">
       <Container style={{ maxWidth: "1200px" }}>
         <div className="text-center mb-5">
-          <h2 className="fw-bold text-brown">☕ Pedidos del Día</h2>
+          <h2 className="fw-bold text-brown">🧊 Pedidos del Día</h2>
           <p className="text-muted">
             Gestiona y entrega pedidos del{" "}
             <strong>{new Date().toLocaleDateString("es-CO")}</strong>
@@ -190,7 +190,7 @@ export default function ModificarPedidosPage() {
                       <h5 className="fw-bold mb-0">#{p.id}</h5>
                       <Badge
                         className={`px-3 py-2 bg-${colorEstado(
-                          p.estado.nombre
+                          p.estado.nombre,
                         )}`}
                       >
                         {p.estado.nombre}
@@ -279,7 +279,7 @@ export default function ModificarPedidosPage() {
                   <FaCalendarAlt className="text-secondary me-2" />
                   <strong>Fecha:</strong>{" "}
                   {new Date(pedidoSeleccionado.fecha_pedido).toLocaleString(
-                    "es-CO"
+                    "es-CO",
                   )}
                 </p>
 
@@ -326,7 +326,7 @@ export default function ModificarPedidosPage() {
 
                     {/* ✅ Cancelar si está Pendiente o Listo */}
                     {["Pendiente", "Listo"].includes(
-                      pedidoSeleccionado?.estado.nombre
+                      pedidoSeleccionado?.estado.nombre,
                     ) && (
                       <Button
                         variant="danger"

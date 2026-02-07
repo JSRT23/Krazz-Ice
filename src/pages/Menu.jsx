@@ -80,7 +80,7 @@ export default function Menu() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          ☕ Nuestro Menú
+          Menú
         </motion.h1>
 
         <Accordion defaultActiveKey="0" alwaysOpen>
@@ -93,20 +93,23 @@ export default function Menu() {
               <Accordion.Header>
                 <h5 className="fw-bold text-dark mb-0">{cat.categoria}</h5>
               </Accordion.Header>
+
               <Accordion.Body className="bg-white rounded-bottom-4 p-4">
                 {cat.subcategorias.map((sub, idxSub) => (
                   <div key={idxSub} className="mb-4">
-                    <h6 className="text-muted mb-3">{sub.nombre}</h6>
+                    <h4 className="text-muted mb-3">{sub.nombre}</h4>
+                    <hr className="mb-4" />
+
                     <Row className="g-4">
                       {sub.productos.map((prod) =>
                         prod.variantes.map((varnt, idxVar) => (
-                          <Col key={varnt.id} xs={12} sm={6} md={4} lg={3}>
+                          <Col key={varnt.id} xs={6} sm={4} md={3} lg={2}>
                             <motion.div
                               initial={{ opacity: 0, scale: 0.95 }}
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{
                                 duration: 0.4,
-                                delay: idxVar * 0.08,
+                                delay: idxVar * 0.05,
                               }}
                             >
                               <Card
@@ -119,29 +122,32 @@ export default function Menu() {
                                     variant="top"
                                     src={
                                       src(
-                                        varnt.imagen_variante || prod.imagen
-                                      ) ||
-                                      "https://via.placeholder.com/300x200?text=Sin+Imagen"
+                                        varnt.imagen_variante || prod.imagen,
+                                      ) || "/sin-imagen.jpg"
                                     }
                                     alt={varnt.nombre_variante}
                                     className="menu-card-img"
                                   />
                                 </div>
-                                <Card.Body className="d-flex flex-column">
-                                  <Card.Title className="fw-bold text-dark mb-1 text-truncate">
+
+                                <Card.Body className="d-flex flex-column p-2">
+                                  <Card.Title className="fw-bold text-dark mb-1 text-truncate small">
                                     {prod.nombre}
                                   </Card.Title>
-                                  <Card.Text className="text-muted small mb-2">
+
+                                  <Card.Text className="text-muted small mb-2 text-truncate">
                                     {varnt.nombre_variante}
                                   </Card.Text>
+
                                   <div className="mt-auto d-flex justify-content-between align-items-center">
                                     <motion.span
-                                      className="fw-bold text-warning fs-5"
+                                      className="fw-bold text-warning"
                                       whileHover={{ scale: 1.1 }}
                                     >
                                       ${parseFloat(varnt.precio).toFixed(2)}
                                     </motion.span>
-                                    <span className="badge bg-light text-dark border">
+
+                                    <span className="badge bg-light text-dark border small">
                                       {varnt.sku}
                                     </span>
                                   </div>
@@ -149,7 +155,7 @@ export default function Menu() {
                               </Card>
                             </motion.div>
                           </Col>
-                        ))
+                        )),
                       )}
                     </Row>
                   </div>

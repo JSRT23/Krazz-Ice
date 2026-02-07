@@ -67,12 +67,12 @@ export default function MisPedidos() {
                         p.estado.nombre === "Pendiente"
                           ? "bg-warning text-dark"
                           : p.estado.nombre === "En cocina"
-                          ? "bg-info text-white"
-                          : p.estado.nombre === "Listo"
-                          ? "bg-success text-white"
-                          : p.estado.nombre === "Entregado"
-                          ? "bg-secondary"
-                          : "bg-danger"
+                            ? "bg-info text-white"
+                            : p.estado.nombre === "Listo"
+                              ? "bg-success text-white"
+                              : p.estado.nombre === "Entregado"
+                                ? "bg-secondary"
+                                : "bg-danger"
                       }`}
                     >
                       {p.estado.nombre}
@@ -112,12 +112,12 @@ export default function MisPedidos() {
             modalData?.estado?.nombre === "Pendiente"
               ? "bg-warning"
               : modalData?.estado?.nombre === "En cocina"
-              ? "bg-info text-white"
-              : modalData?.estado?.nombre === "Listo"
-              ? "bg-success text-white"
-              : modalData?.estado?.nombre === "Entregado"
-              ? "bg-secondary text-white"
-              : "bg-danger text-white"
+                ? "bg-info text-white"
+                : modalData?.estado?.nombre === "Listo"
+                  ? "bg-success text-white"
+                  : modalData?.estado?.nombre === "Entregado"
+                    ? "bg-secondary text-white"
+                    : "bg-danger text-white"
           }`}
         >
           <div className="d-flex align-items-center gap-2">
@@ -176,7 +176,7 @@ export default function MisPedidos() {
                         src={
                           item.variante.imagen_variante ||
                           item.variante.imagen_producto ||
-                          "https://via.placeholder.com/80"
+                          "/sin-imagen.jpg"
                         }
                         alt={item.variante.producto_nombre}
                         className="rounded-circle me-3"
@@ -203,7 +203,7 @@ export default function MisPedidos() {
                         <small className="text-muted">
                           {parseFloat(item.precio_unitario).toLocaleString(
                             "es-CO",
-                            { style: "currency", currency: "COP" }
+                            { style: "currency", currency: "COP" },
                           )}{" "}
                           c/u
                         </small>

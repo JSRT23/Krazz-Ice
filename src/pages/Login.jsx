@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiLock, FiCoffee, FiEye, FiEyeOff, FiUser } from "react-icons/fi";
+import { FiLock, FiEye, FiEyeOff, FiUser } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
@@ -29,15 +29,9 @@ export default function Login() {
       const user = await login(username, password);
       const rol = user?.rol?.toUpperCase();
 
-      if (rol === "MESERO") {
-        navigate("/mesero");
-      } else if (rol === "COCINERO") {
-        navigate("/cocina");
-      } else if (rol === "CLIENTE") {
-        navigate("/");
-      } else {
-        navigate("/");
-      }
+      if (rol === "MESERO") navigate("/mesero");
+      else if (rol === "COCINERO") navigate("/cocina");
+      else navigate("/");
     } catch (err) {
       setError("Usuario o contraseña incorrectos.");
     } finally {
@@ -49,34 +43,39 @@ export default function Login() {
     <div
       className="d-flex justify-content-center align-items-center vh-100"
       style={{
-        background: "linear-gradient(135deg, #ffffffff, #d4c9c0ff)",
+        background: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
       }}
     >
       <motion.div
         className="card shadow-lg border-0 p-5"
         style={{
           width: "100%",
-          maxWidth: "480px",
-          backgroundColor: "#fffaf5",
-          borderRadius: "15px",
+          maxWidth: "460px",
+          backgroundColor: "#ffffff",
+          borderRadius: "18px",
         }}
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
       >
+        {/* LOGO KRAZZ ICE */}
         <div className="text-center mb-4">
-          <div
-            className="rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3"
+          <motion.img
+            src="public/LogoKrazz.jpeg"
+            alt="Krazz Ice"
             style={{
-              width: "75px",
-              height: "75px",
-              backgroundColor: "#6f4e37",
+              width: "110px",
+              height: "110px",
+              objectFit: "contain",
             }}
-          >
-            <FiCoffee size={38} color="#fff" />
-          </div>
-          <h3 className="fw-bold text-dark">Bienvenido de nuevo</h3>
-          <p className="text-muted">Inicia sesión para continuar</p>
+            initial={{ scale: 0.8, rotate: -5 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.5 }}
+          />
+
+          <h4 className="fw-bold mt-3" style={{ color: "#0f2027" }}>
+            KRAZZ ICE
+          </h4>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -84,6 +83,7 @@ export default function Login() {
             <div className="alert alert-danger py-2 text-center">{error}</div>
           )}
 
+          {/* USUARIO */}
           <div className="mb-3">
             <label className="form-label fw-semibold">Usuario</label>
             <div className="input-group">
@@ -100,6 +100,7 @@ export default function Login() {
             </div>
           </div>
 
+          {/* CONTRASEÑA */}
           <div className="mb-4">
             <label className="form-label fw-semibold">Contraseña</label>
             <div className="input-group">
@@ -124,33 +125,22 @@ export default function Login() {
             </div>
           </div>
 
+          {/* BOTÓN */}
           <motion.button
             whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
-            className="btn w-100 text-white fw-semibold"
+            className="btn w-100 text-white fw-semibold py-2"
             style={{
-              backgroundColor: "#6f4e37",
+              background: "linear-gradient(135deg, #00c6ff, #0072ff)",
               border: "none",
+              borderRadius: "10px",
             }}
             disabled={loading}
           >
             {loading ? "Ingresando..." : "Iniciar sesión"}
           </motion.button>
         </form>
-
-        <div className="text-center mt-4">
-          <small className="text-muted">
-            ¿No tienes cuenta?{" "}
-            <a
-              href="/register"
-              className="text-decoration-none fw-semibold"
-              style={{ color: "#6f4e37" }}
-            >
-              Regístrate aquí
-            </a>
-          </small>
-        </div>
       </motion.div>
     </div>
   );
