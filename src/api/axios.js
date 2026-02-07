@@ -2,13 +2,15 @@
 import axios from "axios";
 import { refreshToken, logout } from "../services/authServices";
 
+// URL fija y segura para producción
+const API_URL = "https://planchon.pythonanywhere.com/api";
+
 const instance = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL || "https://planchon.pythonanywhere.com/api",
-  timeout: 8000,
+  baseURL: API_URL,
+  timeout: 10000,
 });
 
-//Interceptor de solicitud → adjunta token si existe
+// 🔐 Interceptor de solicitud: adjunta token
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -20,24 +22,28 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Interceptor de respuesta → intenta refrescar token si expira
+// 🔄 Interceptor de respuesta: refresh token
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Si el error es 401 y no hemos intentado ya refrescar
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const nuevoToken = await refreshToken();
-      if (nuevoToken) {
-        // Reintenta la solicitud original con el nuevo token
-        originalRequest.headers.Authorization = `Bearer ${nuevoToken}`;
-        return instance(originalRequest);
+      try {
+        const nuevoToken = await refreshToken();
+
+        if (nuevoToken) {
+          localStorage.setItem("token", nuevoToken);
+          originalRequest.headers.Authorization = `Bearer ${nuevoToken}`;
+          return instance(originalRequest);
+        }
+      } catch (e) {
+        console.error("Error refrescando token", e);
       }
 
-      // Si no se pudo refrescar → cerrar sesión
+      // ❌ Token inválido o expirado definitivamente
       logout();
       window.location.href = "/login";
     }
