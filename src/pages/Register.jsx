@@ -91,7 +91,7 @@ export default function Register() {
           {/* LOGO */}
           <div className="text-center mb-4">
             <motion.img
-              src="public/LogoKrazz.jpeg"
+              src="/LogoKrazz.jpeg"
               alt="Krazz Ice"
               style={{
                 width: "120px",

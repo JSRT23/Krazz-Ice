@@ -88,6 +88,7 @@ export default function Carrito() {
                         >
                           <i className="bi bi-dash"></i>
                         </button>
+
                         <input
                           type="number"
                           className="form-control text-center fw-semibold"
@@ -104,11 +105,15 @@ export default function Carrito() {
                             )
                           }
                         />
+
                         <button
                           className="btn btn-outline-primary"
                           disabled={item.cantidad >= (item.stock || 999)}
                           onClick={() =>
-                            actualizarCantidad(item.key, item.cantidad + 1)
+                            actualizarCantidad(
+                              item.key,
+                              Math.min(item.cantidad + 1, item.stock || 999),
+                            )
                           }
                         >
                           <i className="bi bi-plus"></i>
@@ -173,10 +178,13 @@ export default function Carrito() {
                       >
                         <i className="bi bi-dash"></i>
                       </button>
+
                       <input
                         type="number"
                         className="form-control text-center"
                         value={item.cantidad}
+                        min={1}
+                        max={item.stock || 999}
                         onChange={(e) =>
                           actualizarCantidad(
                             item.key,
@@ -187,10 +195,15 @@ export default function Carrito() {
                           )
                         }
                       />
+
                       <button
                         className="btn btn-outline-primary"
+                        disabled={item.cantidad >= (item.stock || 999)}
                         onClick={() =>
-                          actualizarCantidad(item.key, item.cantidad + 1)
+                          actualizarCantidad(
+                            item.key,
+                            Math.min(item.cantidad + 1, item.stock || 999),
+                          )
                         }
                       >
                         <i className="bi bi-plus"></i>

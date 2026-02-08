@@ -24,7 +24,7 @@ export default function HomeMesero() {
       btnText: "Ver pedidos →",
       color: "#0072ff",
       route: "/mesero/pedidos/hoy",
-      img: "public/nosotros(KrazzIce).jpeg",
+      img: "/nosotros(KrazzIce).jpeg",
     },
     {
       title: "Registrar Cliente",
