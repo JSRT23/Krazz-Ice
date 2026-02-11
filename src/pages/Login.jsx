@@ -61,7 +61,7 @@ export default function Login() {
         {/* LOGO KRAZZ ICE */}
         <div className="text-center mb-4">
           <motion.img
-            src="/LogoKrazz.jpeg"
+            src="/Inicio.png"
             alt="Krazz Ice"
             style={{
               width: "110px",

@@ -22,6 +22,14 @@ import {
 import { FaPlus, FaMinus, FaTrash, FaCartPlus, FaSearch } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 
+const BASE_URL = "https://planchon.pythonanywhere.com";
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}${path}`;
+};
+
 export default function CrearPedidoPage() {
   const { user: empleado } = useAuth();
 
@@ -29,6 +37,7 @@ export default function CrearPedidoPage() {
   const [metodos, setMetodos] = useState([]);
   const [estados, setEstados] = useState([]);
   const [carrito, setCarrito] = useState([]);
+
   const [mesa, setMesa] = useState("");
   const [cliente, setCliente] = useState("");
   const [metodoPago, setMetodoPago] = useState("");
@@ -43,26 +52,25 @@ export default function CrearPedidoPage() {
 
   const cargarDatos = async () => {
     try {
-      const [respProd, respMet, respEst] = await Promise.all([
+      const [prod, met, est] = await Promise.all([
         getProductosDisponibles(),
         getMetodosPago(),
         getEstados(),
       ]);
-      setProductos(respProd.data);
-      setMetodos(respMet.data);
-      setEstados(respEst.data);
 
-      // Estado por defecto: "Pendiente"
-      const estadoPendiente = respEst.data.find(
+      setProductos(prod.data);
+      setMetodos(met.data);
+      setEstados(est.data);
+
+      const pendiente = est.data.find(
         (e) => e.nombre.toLowerCase() === "pendiente",
       );
-      if (estadoPendiente) setEstadoPedido(estadoPendiente.id);
+      if (pendiente) setEstadoPedido(pendiente.id);
     } catch {
       Swal.fire({
         icon: "error",
         title: "Error al cargar datos",
-        text: "No se pudieron obtener los productos ni los datos necesarios.",
-        confirmButtonColor: "#d33",
+        text: "No se pudieron obtener los datos necesarios.",
       });
     }
   };
@@ -70,7 +78,7 @@ export default function CrearPedidoPage() {
   const stockDisponible = (p) =>
     Math.max(0, (p.stock || 0) - (p.stock_bloqueado || 0));
 
-  const filtrarProductos = productos.filter((p) =>
+  const productosFiltrados = productos.filter((p) =>
     `${p.producto?.nombre || ""} ${p.nombre_variante || ""} ${
       p.codigo_barras || ""
     }`
@@ -81,13 +89,7 @@ export default function CrearPedidoPage() {
   const agregar = (producto) => {
     const disponible = stockDisponible(producto);
     if (disponible <= 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Sin stock disponible",
-        text: "Este producto no tiene unidades disponibles.",
-        confirmButtonColor: "#3473f2",
-      });
-      return;
+      return Swal.fire("Sin stock", "Producto agotado", "warning");
     }
 
     setCarrito((prev) => {
@@ -98,32 +100,24 @@ export default function CrearPedidoPage() {
             p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p,
           );
         }
-        Swal.fire({
-          icon: "info",
-          title: "Stock máximo alcanzado",
-          text: `Solo hay ${disponible} unidades disponibles.`,
-          confirmButtonColor: "#417ae3",
-        });
+        Swal.fire("Stock máximo", "No hay más unidades disponibles", "info");
         return prev;
       }
-
-      const nombreGlobal = `${producto.producto?.nombre || ""} - ${
-        producto.nombre_variante
-      }`;
 
       return [
         ...prev,
         {
           ...producto,
-          nombreGlobal,
           cantidad: 1,
           stock_disponible: disponible,
+          nombreGlobal: producto.producto?.nombre,
+          variante: producto.nombre_variante,
         },
       ];
     });
   };
 
-  const aumentar = (id) => {
+  const aumentar = (id) =>
     setCarrito((prev) =>
       prev.map((p) =>
         p.id === id && p.cantidad < p.stock_disponible
@@ -131,144 +125,95 @@ export default function CrearPedidoPage() {
           : p,
       ),
     );
-  };
 
-  const disminuir = (id) => {
+  const disminuir = (id) =>
     setCarrito((prev) =>
       prev.map((p) =>
         p.id === id ? { ...p, cantidad: Math.max(1, p.cantidad - 1) } : p,
       ),
     );
-  };
 
-  const eliminar = (id) => {
+  const eliminar = (id) =>
     Swal.fire({
       title: "¿Eliminar producto?",
-      text: "Este producto se eliminará del carrito.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#3d74e3",
-      cancelButtonColor: "#6c757d",
-      background: "#fff8e7",
-      color: "#4b3a2f",
-    }).then((res) => {
-      if (res.isConfirmed)
-        setCarrito((prev) => prev.filter((p) => p.id !== id));
+      confirmButtonText: "Eliminar",
+    }).then((r) => {
+      if (r.isConfirmed) setCarrito((prev) => prev.filter((p) => p.id !== id));
     });
-  };
 
   const crear = async () => {
-    if (!metodoPago) {
-      return Swal.fire({
-        icon: "warning",
-        title: "Selecciona un método de pago",
-        confirmButtonColor: "#3e77ef",
-      });
-    }
-
-    if (!estadoPedido) {
-      return Swal.fire({
-        icon: "warning",
-        title: "Selecciona un estado del pedido",
-        confirmButtonColor: "#3e77ef",
-      });
-    }
-
-    if (carrito.length === 0) {
-      return Swal.fire({
-        icon: "info",
-        title: "Carrito vacío",
-        text: "Agrega productos antes de crear el pedido.",
-        confirmButtonColor: "#3876f2",
-      });
-    }
+    if (!metodoPago) return Swal.fire("Falta método de pago", "", "warning");
+    if (!estadoPedido)
+      return Swal.fire("Falta estado del pedido", "", "warning");
+    if (carrito.length === 0) return Swal.fire("Carrito vacío", "", "info");
 
     setLoading(true);
 
     try {
       let clienteId = null;
-
-      if (cliente.trim() !== "") {
+      if (cliente.trim()) {
         try {
           const data = await buscarClientePorUsername(cliente);
           clienteId = data.id;
         } catch {
-          await Swal.fire({
-            icon: "warning",
-            title: "Cliente no encontrado",
-            text: `No se encontró ningún cliente con el usuario ${cliente}.`,
-            confirmButtonColor: "#3876f2",
-          });
+          await Swal.fire(
+            "Cliente no encontrado",
+            "Se continuará sin cliente",
+            "warning",
+          );
         }
       }
 
-      const pedidoData = {
+      const { data: pedido } = await crearPedido({
         cliente: clienteId,
-        empleado: empleado?.id || null,
-        mesa: mesa.trim() === "" ? null : parseInt(mesa),
-        metodo_pago_id: parseInt(metodoPago),
-        estado_id: parseInt(estadoPedido),
+        empleado: empleado?.id,
+        mesa: mesa.trim() ? parseInt(mesa) : null,
+        metodo_pago_id: metodoPago,
+        estado_id: estadoPedido,
         notas,
-      };
-
-      const { data: pedido } = await crearPedido(pedidoData);
+      });
 
       for (const item of carrito) {
         await agregarDetalle({
           pedido_id: pedido.id,
-          variante_id: item.id, // ✅ corregido
+          variante_id: item.id,
           cantidad: item.cantidad,
         });
       }
 
       await Swal.fire({
         icon: "success",
-        title: "Pedido creado con éxito",
-        text: `El pedido #${pedido.id} se ha registrado correctamente.`,
-        confirmButtonColor: "#3876f2",
-        background: "#fff8e7",
-        color: "#4b3a2f",
-        showCloseButton: true,
+        title: "Pedido creado",
+        text: `Pedido #${pedido.id} registrado correctamente`,
       });
 
       setCarrito([]);
       setMesa("");
       setCliente("");
       setMetodoPago("");
-      setEstadoPedido("");
       setNotas("");
       await cargarDatos();
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error al crear el pedido",
-        text:
-          error.response?.data?.detail ||
-          JSON.stringify(error.response?.data) ||
-          "Revisa la consola para más detalles.",
-        confirmButtonColor: "#d33",
-      });
+    } catch (e) {
+      Swal.fire("Error", "No se pudo crear el pedido", "error");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="bg-light min-vh-100 py-5">
-      <Container
-        className="bg-white p-4 rounded-4 shadow-sm"
-        style={{ maxWidth: "1200px" }}
-      >
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h3 className="text-brown fw-bold">🧊 Crear Pedido Krazz Ice</h3>
-          <span className="text-muted small">
-            Mesero: <strong>{empleado?.username || "—"}</strong>
+    <main className="bg-light min-vh-100 py-4">
+      <Container fluid="lg" className="bg-white p-4 rounded-4 shadow-sm">
+        <div className="d-flex justify-content-between mb-3">
+          <h4>🧊 Crear Pedido Krazz Ice</h4>
+          <span className="text-muted">
+            Mesero: <strong>{empleado?.username}</strong>
           </span>
         </div>
 
-        <Row className="g-3 mb-4">
+        {/* CONTROLES */}
+        <Row className="g-3 mb-3">
           <Col md={2}>
             <Form.Control
               placeholder="Mesa"
@@ -278,7 +223,7 @@ export default function CrearPedidoPage() {
           </Col>
           <Col md={3}>
             <Form.Control
-              placeholder="Cliente (username opcional)"
+              placeholder="Cliente"
               value={cliente}
               onChange={(e) => setCliente(e.target.value)}
             />
@@ -301,7 +246,6 @@ export default function CrearPedidoPage() {
               value={estadoPedido}
               onChange={(e) => setEstadoPedido(e.target.value)}
             >
-              <option value="">Estado del pedido</option>
               {estados.map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.nombre}
@@ -311,51 +255,52 @@ export default function CrearPedidoPage() {
           </Col>
           <Col md={2}>
             <Form.Control
-              placeholder="Notas (ej: sin cebolla)"
+              placeholder="Notas"
               value={notas}
               onChange={(e) => setNotas(e.target.value)}
             />
           </Col>
         </Row>
 
-        {/* Buscador */}
-        <InputGroup className="mb-4">
-          <InputGroup.Text style={{ backgroundColor: "#fff8e7" }}>
+        {/* BUSCADOR */}
+        <InputGroup className="mb-3">
+          <InputGroup.Text>
             <FaSearch />
           </InputGroup.Text>
           <Form.Control
-            placeholder="Buscar producto o código..."
+            placeholder="Buscar producto..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
           />
         </InputGroup>
 
-        <Row>
-          {/* Productos */}
-          <Col md={7}>
+        <Row className="g-3">
+          {/* PRODUCTOS */}
+          <Col lg={7}>
             <div
-              className="row row-cols-1 row-cols-sm-2 g-3"
-              style={{ maxHeight: "500px", overflowY: "auto" }}
+              className="row row-cols-2 row-cols-md-3 g-3"
+              style={{ maxHeight: "60vh", overflowY: "auto" }}
             >
-              {filtrarProductos.map((p) => (
+              {productosFiltrados.map((p) => (
                 <div className="col" key={p.id}>
-                  <Card className="h-100 shadow-sm border-0">
-                    <Card.Body className="d-flex flex-column justify-content-between">
-                      <div>
-                        <Card.Title style={{ fontSize: "1rem" }}>
-                          {p.producto?.nombre} - {p.nombre_variante}
-                        </Card.Title>
-                        <Card.Text className="text-muted small mb-0">
-                          codigo: {p.codigo_barras}
-                        </Card.Text>
-                        <Card.Text className="text-muted small">
-                          Cantidad: {stockDisponible(p)} | Precio: ${p.precio}
-                        </Card.Text>
+                  <Card className="h-100 shadow-sm">
+                    <Card.Img
+                      src={getImageUrl(p.imagen_variante)}
+                      style={{ height: 140, objectFit: "cover" }}
+                    />
+                    <Card.Body className="p-2">
+                      <h6>{p.producto?.nombre}</h6>
+                      <small className="text-muted">{p.nombre_variante}</small>
+                      <div className="d-flex justify-content-between mt-1">
+                        <strong className="text-success">${p.precio}</strong>
+                        <span className="badge bg-secondary">
+                          {stockDisponible(p)}
+                        </span>
                       </div>
                       <Button
-                        variant="outline-primary"
+                        size="sm"
+                        className="w-100 mt-2"
                         onClick={() => agregar(p)}
-                        disabled={stockDisponible(p) <= 0}
                       >
                         <FaCartPlus /> Agregar
                       </Button>
@@ -366,89 +311,94 @@ export default function CrearPedidoPage() {
             </div>
           </Col>
 
-          {/* Carrito */}
-          <Col md={5}>
-            <Card className="shadow-sm border-0">
+          {/* CARRITO */}
+          <Col lg={5}>
+            <Card className="shadow-sm sticky-lg-top">
               <Card.Body>
-                <h5 className="fw-bold mb-3">🛒 Carrito</h5>
-                {carrito.length === 0 ? (
-                  <p className="text-muted text-center">
-                    Aún no hay productos agregados.
-                  </p>
-                ) : (
-                  <>
-                    <Table borderless hover responsive size="sm">
-                      <tbody>
-                        {carrito.map((item) => (
-                          <tr key={item.id}>
-                            <td className="text-start">
-                              <strong>{item.nombreGlobal}</strong>
-                              <div className="text-muted small">
-                                ${item.precio}
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              <div className="d-flex justify-content-center align-items-center gap-2">
-                                <Button
-                                  variant="outline-secondary"
-                                  size="sm"
-                                  onClick={() => disminuir(item.id)}
-                                >
-                                  <FaMinus />
-                                </Button>
-                                <span>{item.cantidad}</span>
-                                <Button
-                                  variant="outline-secondary"
-                                  size="sm"
-                                  onClick={() => aumentar(item.id)}
-                                  disabled={
-                                    item.cantidad >= item.stock_disponible
-                                  }
-                                >
-                                  <FaPlus />
-                                </Button>
-                              </div>
-                            </td>
-                            <td className="text-end">
-                              ${(item.precio * item.cantidad).toFixed(2)}
-                              <br />
-                              <Button
-                                variant="link"
-                                className="text-danger p-0"
-                                onClick={() => eliminar(item.id)}
-                              >
-                                <FaTrash />
-                              </Button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                    <div className="d-flex justify-content-between mt-3">
-                      <strong>Total:</strong>
-                      <span className="fw-bold text-success">
-                        $
-                        {carrito
-                          .reduce(
-                            (total, item) =>
-                              total + item.precio * item.cantidad,
-                            0,
-                          )
-                          .toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="text-center mt-4">
-                      <Button
-                        variant="primary"
-                        className="px-4"
-                        onClick={crear}
-                        disabled={loading}
-                      >
-                        {loading ? "Creando..." : " Confirmar Pedido ✅ "}
-                      </Button>
-                    </div>
-                  </>
-                )}
+                <h5>🛒 Carrito</h5>
+                <Table size="sm" borderless responsive>
+                  <tbody>
+                    {carrito.map((i) => (
+                      <tr key={i.id}>
+                        <td>
+                          <div className="d-flex align-items-center gap-2">
+                            <img
+                              src={getImageUrl(i.imagen_variante)}
+                              width={40}
+                              height={40}
+                              style={{ objectFit: "cover", borderRadius: 6 }}
+                            />
+                            <strong>{i.nombreGlobal}</strong>
+                          </div>
+                          <div className="text-muted small mt-1">
+                            <strong>{i.variante} - </strong>
+                            {new Intl.NumberFormat("es-CO", {
+                              style: "currency",
+                              currency: "COP",
+                              minimumFractionDigits: 0,
+                            }).format(i.precio)}
+                            x {i.cantidad}
+                          </div>
+                        </td>
+                        <td className="text-center">
+                          <Button
+                            size="sm"
+                            variant="outline-secondary"
+                            onClick={() => disminuir(i.id)}
+                          >
+                            <FaMinus />
+                          </Button>
+                          <span className="mx-2">{i.cantidad}</span>{" "}
+                          <Button
+                            size="sm"
+                            variant="outline-secondary"
+                            onClick={() => aumentar(i.id)}
+                          >
+                            <FaPlus />
+                          </Button>
+                        </td>
+                        <td className="text-end">
+                          <strong>
+                            {new Intl.NumberFormat("es-CO", {
+                              style: "currency",
+                              currency: "COP",
+                              minimumFractionDigits: 0,
+                            }).format(i.precio * i.cantidad)}
+                          </strong>
+                          <br />
+                          <Button
+                            size="sm"
+                            variant="link"
+                            className="text-danger p-0"
+                            onClick={() => eliminar(i.id)}
+                          >
+                            <FaTrash />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                <div className="d-flex justify-content-between border-top pt-2">
+                  <strong>Total</strong>
+                  <span className="fw-bold text-success fs-5">
+                    {new Intl.NumberFormat("es-CO", {
+                      style: "currency",
+                      currency: "COP",
+                      minimumFractionDigits: 0,
+                    }).format(
+                      carrito.reduce((t, i) => t + i.precio * i.cantidad, 0),
+                    )}
+                  </span>
+                </div>
+
+                <Button
+                  className="w-100 mt-3"
+                  onClick={crear}
+                  disabled={loading}
+                >
+                  {loading ? "Creando..." : "Confirmar Pedido ✅"}
+                </Button>
               </Card.Body>
             </Card>
           </Col>
