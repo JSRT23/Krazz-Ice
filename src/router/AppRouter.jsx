@@ -16,6 +16,8 @@ import Carrito from "../pages/clientes/Carrito";
 import RealizarPedido from "../pages/clientes/RealizarPedido";
 import Pedidos from "../pages/clientes/Pedidos";
 import MisPedidos from "../pages/clientes/MisPedidos";
+import DashboardAdmin from "../pages/admin/DashboardAdmin";
+import EstadisticasProductos from "../pages/admin/EstadisticasProductos";
 
 export default function AppRouter() {
   return (
@@ -24,7 +26,6 @@ export default function AppRouter() {
 
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
       <Route path="/nosotros" element={<Nosotros />} />
       <Route path="/menu" element={<Menu />} />
       <Route path="/producto/variante/:id" element={<VarianteDetalle />} />
@@ -67,6 +68,17 @@ export default function AppRouter() {
       />
 
       {/* Mesero */}
+
+      {/*Registrar clientes nuevos   */}
+
+      <Route
+        path="/register"
+        element={
+          <PrivateRoute allowedRoles={["MESERO"]}>
+            <Register />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/mesero"
         element={
@@ -98,6 +110,23 @@ export default function AppRouter() {
         element={
           <PrivateRoute allowedRoles={["COCINERO"]}>
             <CocinaPage />
+          </PrivateRoute>
+        }
+      />
+      {/* Dashboard Admin */}
+      <Route
+        path="/admin"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <DashboardAdmin />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/estadisticas-productos"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <EstadisticasProductos />
           </PrivateRoute>
         }
       />

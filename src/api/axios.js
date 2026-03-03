@@ -3,7 +3,7 @@ import axios from "axios";
 import { refreshToken, logout } from "../services/authServices";
 
 // URL fija y segura para producción
-const API_URL = "https://planchon.pythonanywhere.com/api";
+const API_URL = "http://krazz.pythonanywhere.com/api";
 
 const instance = axios.create({
   baseURL: API_URL,

@@ -31,6 +31,7 @@ export default function Login() {
 
       if (rol === "MESERO") navigate("/mesero");
       else if (rol === "COCINERO") navigate("/cocina");
+      else if (rol === "ADMIN") navigate("/admin");
       else navigate("/");
     } catch (err) {
       setError("Usuario o contraseña incorrectos.");

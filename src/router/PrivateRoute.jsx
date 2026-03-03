@@ -12,8 +12,8 @@ export default function PrivateRoute({ children, allowedRoles = [] }) {
   const allowed = allowedRoles.map((r) => r.toUpperCase());
 
   if (allowed.length && !allowed.includes(userRol)) {
-    console.warn("🚫 Rol no permitido → /home");
-    return <Navigate to="/home" replace />;
+    console.warn("🚫 Rol no permitido → /home (403)");
+    return <Navigate to="/" replace />;
   }
 
   return children;

@@ -20,6 +20,20 @@ export default function Navbar() {
   };
 
   const navLinks = [];
+  if (user?.rol === "ADMIN") {
+    navLinks.push(
+      {
+        to: "/admin",
+        label: "Dashboard",
+        icon: "speedometer2",
+      },
+      {
+        to: "/admin/estadisticas-productos",
+        label: "Estadísticas",
+        icon: "bar-chart-line",
+      },
+    );
+  }
 
   if (!user || user.rol === "CLIENTE") {
     navLinks.push(

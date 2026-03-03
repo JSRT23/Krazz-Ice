@@ -23,7 +23,7 @@ export const refreshToken = async () => {
   } catch (error) {
     console.warn(
       "⚠️ No se pudo refrescar el token:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     logout();
     return null;
@@ -52,7 +52,7 @@ export const login = async (username, password) => {
   } catch (error) {
     console.error(
       "❌ Error en inicio de sesión:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw error;
   }
@@ -77,7 +77,7 @@ export const getMe = async () => {
 // Buscar cliente por nombre de usuario (solo mesero/admin)
 export const buscarClientePorUsername = async (username) => {
   const { data } = await axios.get(
-    `/usuarios/auth/buscar-cliente/${username}/`
+    `/usuarios/auth/buscar-cliente/${username}/`,
   );
   return data;
 };
