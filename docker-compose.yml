@@ -1,0 +1,28 @@
+# Producción local:  docker compose up --build                      -> http://localhost:8080
+# Desarrollo (HMR):  docker compose --profile dev up --build dev   -> http://localhost:5173
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-}
+    container_name: krazz-ice-web
+    ports:
+      - "${PORT:-8080}:80"
+    restart: unless-stopped
+
+  dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: krazz-ice-dev
+    ports:
+      - "${DEV_PORT:-5173}:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - VITE_API_URL=${VITE_API_URL:-}
+    volumes:
+      - .:/app
+      - /app/node_modules

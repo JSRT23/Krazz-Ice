@@ -1,16 +1,58 @@
-# React + Vite
+# 🍦 Krazz Ice — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web de **Krazz Ice / Coffee & Rest**: catálogo, carrito y pedidos para clientes, y paneles operativos para meseros, cocina y administración.
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?logo=bootstrap&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Qué hace
 
-## React Compiler
+- Interfaz por **rol**: `admin`, `mesero`, `cocina` y `cliente`, con rutas protegidas.
+- Consume la API REST del backend [Coffee-Restaurant](https://github.com/JSRT23/Coffee-Restaurant) (Django + DRF + JWT).
+- Por defecto apunta a `https://krazzice.pythonanywhere.com/api`; se puede cambiar con `VITE_API_URL`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the ESLint configuration
+React 19 · Vite 7 · React Router · Bootstrap · axios · nginx (imagen de producción)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Variables de entorno
+
+Copia `.env.example` a `.env` (opcional):
+
+| Variable | Descripción | Por defecto |
+|---|---|---|
+| `VITE_API_URL` | URL base de la API | `https://krazzice.pythonanywhere.com/api` |
+
+## Cómo correrlo
+
+### Con Docker
+
+```bash
+git clone https://github.com/JSRT23/Krazz-Ice.git
+cd Krazz-Ice
+docker compose up --build web          # producción (nginx) -> http://localhost:8080
+docker compose --profile dev up dev    # desarrollo con HMR  -> http://localhost:5173
+```
+
+Para apuntar a otra API: `VITE_API_URL=http://localhost:8000/api docker compose up --build web` (la variable se incrusta en el build).
+
+### Sin Docker
+
+Requiere Node 20+.
+
+```bash
+npm ci
+npm run dev        # http://localhost:5173
+npm run build      # genera dist/
+```
+
+## Estructura Docker
+
+| Archivo | Uso |
+|---|---|
+| `Dockerfile` | Build multi-etapa: `node:22-alpine` → `nginx:1.27-alpine` |
+| `Dockerfile.dev` | Servidor Vite con HMR |
+| `nginx.conf` | Fallback SPA y caché de assets |
+| `docker-compose.yml` | Servicios `web` (8080) y `dev` (perfil `dev`, 5173) |
